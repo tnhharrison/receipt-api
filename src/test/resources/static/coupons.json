@@ -1,0 +1,19 @@
+[
+    {
+      "couponName": "Test1 Discount",
+      "appliedSku": 123456,
+      "discountPrice": 0.99
+    },
+    {
+      "couponName": "Test2 Discount",
+      "appliedSku": 234567,
+      "discountPrice": 1.99
+    },
+    {
+      "couponName": "Test3 Discount",
+      "appliedSku": 345678,
+      "discountPrice": 2.99
+    }
+  ]
+  
+  
