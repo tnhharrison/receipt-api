@@ -94,6 +94,7 @@ Description: The v2 endpoint contains all of the functionality of the v2 endpoin
 * One time read from coupons.json file instead of each time an item is processed
 * Script for building and running the app (potentially use docker to do this)
 * Utilize library (like Jacoco) to check code coverage
+* Add swagger for pretty documentation & ability to test without curl or external application
 
 ### Reference Documentation
 For further reference, please consider the following sections:
