@@ -26,6 +26,7 @@ To run unit tests, run the following command:
 ## Endpoints
 ### POST /v1/checkout
 Content-Type: application/json
+
 Body:
 `{
   "items": [
@@ -57,6 +58,7 @@ Description: The v1 endpoint takes a list of items in the customer's shopping ca
 
 ### POST /v2/checkout
 Content-Type: application/json
+
 Body:
 `{
   "items": [
