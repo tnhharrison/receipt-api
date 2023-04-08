@@ -1,5 +1,7 @@
 package com.heb.receiptapi.model;
 
+import java.math.BigDecimal;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,10 +11,10 @@ import lombok.Data;
 @Data
 @Builder
 public class ReceiptWithDiscountsResponse {
-    private float subtotalBeforeDiscounts;
-    private float discountTotal;
-    private float subtotalAfterDiscounts;
-    private float taxableSubtotalAfterDiscounts;
-    private float taxTotal;
-    private float grandTotal;
+    private BigDecimal subtotalBeforeDiscounts;
+    private BigDecimal discountTotal;
+    private BigDecimal subtotalAfterDiscounts;
+    private BigDecimal taxableSubtotalAfterDiscounts;
+    private BigDecimal taxTotal;
+    private BigDecimal grandTotal;
 }

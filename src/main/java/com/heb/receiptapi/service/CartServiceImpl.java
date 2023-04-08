@@ -1,5 +1,8 @@
 package com.heb.receiptapi.service;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +22,8 @@ import lombok.extern.java.Log;
 @Log
 public class CartServiceImpl implements CartService {
 
-    private final float TAX_RATE = 0.825f;
+    private final BigDecimal TAX_RATE = BigDecimal.valueOf(0.0825);
+    private final MathContext CONTEXT = new MathContext(2, RoundingMode.HALF_UP);
 
     @Autowired
     private CouponRepo coupons;
@@ -32,25 +36,25 @@ public class CartServiceImpl implements CartService {
     @Override
     public ReceiptResponse checkout(List<Item> items) {
         log.info("Entering checkout()");
-        float subtotal = 0,
-            taxableSubtotal = 0;
+        BigDecimal subtotal = new BigDecimal(0.00),
+            taxableSubtotal = new BigDecimal(0.00);
         for (var item : items) {
             if (item.isTaxable()) {
-                taxableSubtotal = this.round2places(taxableSubtotal + item.getPrice());
+                taxableSubtotal = taxableSubtotal.add(item.getPrice());
             }
-            subtotal = this.round2places(subtotal + item.getPrice());
+            subtotal = subtotal.add(item.getPrice());
         }
 
-        float taxTotal = this.round2places(taxableSubtotal * TAX_RATE);
-        float grandTotal = subtotal + taxTotal;
+        BigDecimal taxTotal = taxableSubtotal.multiply(TAX_RATE);
+        BigDecimal grandTotal = subtotal.add(taxTotal);
 
         log.info("Exiting checkout()");
 
         return ReceiptResponse.builder()
-                .subtotal(subtotal)
-                .taxableSubtotal(taxableSubtotal)
-                .taxTotal(taxTotal)
-                .grandTotal(grandTotal)
+                .subtotal(subtotal.setScale(2, RoundingMode.HALF_UP))
+                .taxableSubtotal(taxableSubtotal.setScale(2, RoundingMode.HALF_UP))
+                .taxTotal(taxTotal.setScale(2, RoundingMode.HALF_UP))
+                .grandTotal(grandTotal.setScale(2, RoundingMode.HALF_UP))
                 .build();
     }
 
@@ -62,48 +66,41 @@ public class CartServiceImpl implements CartService {
     @Override
     public ReceiptWithDiscountsResponse checkoutWithCoupons(List<Item> items) {
         log.info("Entering checkoutWithCoupons()");
-        float subtotal = 0,
-            taxableSubtotal = 0,
-            discountTotal = 0;
+        BigDecimal subtotal = BigDecimal.valueOf(0.00),
+            taxableSubtotal = BigDecimal.valueOf(0.00),
+            discountTotal = BigDecimal.valueOf(0.00);
 
-        for (var item : items) {
-            // check if item has discount
-            // calc final price
-            float discount = coupons.getDiscount(item.getSku());
-            discountTotal = this.round2places(discountTotal + discount);
-            float finalPrice = (item.getPrice() - discount);
+        // for (var item : items) {
+        //     // check if item has discount
+        //     // calc final price
+        //     BigDecimal discount = coupons.getDiscount(item.getSku());
+        //     discountTotal = discountTotal + discount;
+        //     BigDecimal finalPrice = item.getPrice() - discount;
 
-            //final price cannot be negative
-            if(finalPrice < 0) {
-                finalPrice = 0;
-            }
-            if (item.isTaxable()) {
-                taxableSubtotal = this.round2places(taxableSubtotal + finalPrice);
-            }
-            subtotal = this.round2places(subtotal + item.getPrice());
-        }
+        //     //final price cannot be negative
+        //     if(finalPrice < 0.00) {
+        //         finalPrice = 0.00;
+        //     }
+        //     if (item.isTaxable()) {
+        //         taxableSubtotal = taxableSubtotal + finalPrice;
+        //     }
+        //     subtotal = subtotal + item.getPrice();
+        // }
 
-        float subtotalAfterDiscounts = subtotal - discountTotal;
+        // BigDecimal subtotalAfterDiscounts = subtotal - discountTotal;
 
-        float taxTotal = this.round2places(taxableSubtotal * TAX_RATE);
-        float grandTotal = subtotal + taxTotal;
+        // BigDecimal taxTotal = this.round2places(taxableSubtotal * TAX_RATE);
+        // BigDecimal grandTotal = subtotal + taxTotal;
 
-        log.info("Exiting checkoutWithCoupons()");
+        // log.info("Exiting checkoutWithCoupons()");
 
         return ReceiptWithDiscountsResponse.builder()
                 .subtotalBeforeDiscounts(subtotal)
-                .subtotalAfterDiscounts(subtotalAfterDiscounts)
+                .subtotalAfterDiscounts(BigDecimal.valueOf(0.00))
                 .discountTotal(discountTotal)
                 .taxableSubtotalAfterDiscounts(taxableSubtotal)
-                .taxTotal(taxTotal)
-                .grandTotal(grandTotal)
+                .taxTotal(BigDecimal.valueOf(0.00))
+                .grandTotal(BigDecimal.valueOf(0.00))
                 .build();
-    }
-
-    /**
-     * Helper function to round a float to two decimal places
-     */
-    private float round2places(float num) {
-        return Math.round((num * 100.0) / 100.0);
     }
 }

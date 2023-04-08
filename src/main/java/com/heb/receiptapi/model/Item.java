@@ -1,5 +1,7 @@
 package com.heb.receiptapi.model;
 
+import java.math.BigDecimal;
+
 import lombok.Builder;
 import lombok.Data;
 import lombok.Value;
@@ -15,5 +17,5 @@ public class Item {
     private long sku;
     private boolean isTaxable;
     private boolean ownBrand;
-    private float price;
+    private BigDecimal price;
 }

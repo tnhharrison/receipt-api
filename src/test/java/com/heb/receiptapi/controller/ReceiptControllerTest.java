@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -38,10 +39,10 @@ public class ReceiptControllerTest {
     @Test
     void testGetReceiptV1() throws JsonProcessingException, Exception {
         ReceiptResponse expected = ReceiptResponse.builder()
-            .grandTotal(0)
-            .subtotal(0)
-            .taxTotal(0)
-            .taxableSubtotal(0)
+            .grandTotal(BigDecimal.valueOf(0))
+            .subtotal(BigDecimal.valueOf(0))
+            .taxTotal(BigDecimal.valueOf(0))
+            .taxableSubtotal(BigDecimal.valueOf(0))
             .build();
             
         Mockito.when(service.checkout(anyList())).thenReturn(expected);
@@ -58,10 +59,10 @@ public class ReceiptControllerTest {
     @Test
     void testGetReceiptV1BadMethod() throws JsonProcessingException, Exception {
         ReceiptResponse expected = ReceiptResponse.builder()
-            .grandTotal(0)
-            .subtotal(0)
-            .taxTotal(0)
-            .taxableSubtotal(0)
+            .grandTotal(BigDecimal.valueOf(0))
+            .subtotal(BigDecimal.valueOf(0))
+            .taxTotal(BigDecimal.valueOf(0))
+            .taxableSubtotal(BigDecimal.valueOf(0))
             .build();
             
         Mockito.when(service.checkout(anyList())).thenReturn(expected);
@@ -73,12 +74,12 @@ public class ReceiptControllerTest {
     @Test
     void testGetReceiptV2() throws JsonProcessingException, Exception {
         ReceiptWithDiscountsResponse expected = ReceiptWithDiscountsResponse.builder()
-            .grandTotal(0)
-            .discountTotal(0)
-            .subtotalAfterDiscounts(0)
-            .subtotalBeforeDiscounts(0)
-            .taxableSubtotalAfterDiscounts(0)
-            .taxTotal(0)
+            .grandTotal(BigDecimal.valueOf(0))
+            .discountTotal(BigDecimal.valueOf(0))
+            .subtotalAfterDiscounts(BigDecimal.valueOf(0))
+            .subtotalBeforeDiscounts(BigDecimal.valueOf(0))
+            .taxableSubtotalAfterDiscounts(BigDecimal.valueOf(0))
+            .taxTotal(BigDecimal.valueOf(0))
             .build();
             
         Mockito.when(service.checkoutWithCoupons(anyList())).thenReturn(expected);
@@ -95,12 +96,12 @@ public class ReceiptControllerTest {
     @Test
     void testGetReceiptV2BadMethod() throws Exception {
         ReceiptWithDiscountsResponse expected = ReceiptWithDiscountsResponse.builder()
-        .grandTotal(0)
-        .discountTotal(0)
-        .subtotalAfterDiscounts(0)
-        .subtotalBeforeDiscounts(0)
-        .taxableSubtotalAfterDiscounts(0)
-        .taxTotal(0)
+        .grandTotal(BigDecimal.valueOf(0))
+        .discountTotal(BigDecimal.valueOf(0))
+        .subtotalAfterDiscounts(BigDecimal.valueOf(0))
+        .subtotalBeforeDiscounts(BigDecimal.valueOf(0))
+        .taxableSubtotalAfterDiscounts(BigDecimal.valueOf(0))
+        .taxTotal(BigDecimal.valueOf(0))
         .build();
         
     Mockito.when(service.checkoutWithCoupons(anyList())).thenReturn(expected);
