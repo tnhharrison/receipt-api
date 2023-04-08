@@ -2,6 +2,7 @@ package com.heb.receiptapi.repository;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +32,7 @@ public class CouponRepoImpl implements CouponRepo {
      * @returns
      */
     @Override
-    public float getDiscount(long sku) {
+    public BigDecimal getDiscount(long sku) {
         log.info("entering getDiscount()");
 
         try {
@@ -49,7 +50,7 @@ public class CouponRepoImpl implements CouponRepo {
             }
         }
         log.info("exiting getDiscount() -- no discount");
-        return 0;
+        return BigDecimal.valueOf(0);
     }
     
 }

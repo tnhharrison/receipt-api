@@ -1,5 +1,7 @@
 package com.heb.receiptapi.repository;
 
+import java.math.BigDecimal;
+
 /**
  * Interface for the Coupon Repository
  */
@@ -9,5 +11,5 @@ public interface CouponRepo {
      * @param sku
      * @return
      */
-    public float getDiscount(long sku);
+    public BigDecimal getDiscount(long sku);
 }

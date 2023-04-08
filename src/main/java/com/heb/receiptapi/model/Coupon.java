@@ -1,5 +1,7 @@
 package com.heb.receiptapi.model;
 
+import java.math.BigDecimal;
+
 import lombok.Builder;
 import lombok.Data;
 import lombok.Value;
@@ -15,5 +17,5 @@ import lombok.extern.jackson.Jacksonized;
 public class Coupon {
     private String couponName;
     private long appliedSku;
-    private float discountPrice;
+    private BigDecimal discountPrice;
 }

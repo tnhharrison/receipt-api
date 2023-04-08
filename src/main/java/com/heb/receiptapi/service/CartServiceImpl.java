@@ -23,7 +23,6 @@ import lombok.extern.java.Log;
 public class CartServiceImpl implements CartService {
 
     private final BigDecimal TAX_RATE = BigDecimal.valueOf(0.0825);
-    private final MathContext CONTEXT = new MathContext(2, RoundingMode.HALF_UP);
 
     @Autowired
     private CouponRepo coupons;
@@ -70,37 +69,40 @@ public class CartServiceImpl implements CartService {
             taxableSubtotal = BigDecimal.valueOf(0.00),
             discountTotal = BigDecimal.valueOf(0.00);
 
-        // for (var item : items) {
-        //     // check if item has discount
-        //     // calc final price
-        //     BigDecimal discount = coupons.getDiscount(item.getSku());
-        //     discountTotal = discountTotal + discount;
-        //     BigDecimal finalPrice = item.getPrice() - discount;
+        for (var item : items) {
+            // check if item has discount
+            // calc final price
+            BigDecimal discount = coupons.getDiscount(item.getSku());
+            BigDecimal finalPrice = item.getPrice().subtract(discount);
 
-        //     //final price cannot be negative
-        //     if(finalPrice < 0.00) {
-        //         finalPrice = 0.00;
-        //     }
-        //     if (item.isTaxable()) {
-        //         taxableSubtotal = taxableSubtotal + finalPrice;
-        //     }
-        //     subtotal = subtotal + item.getPrice();
-        // }
+            //final price cannot be negative - compareTo returns -1 if value is less than
+            if(finalPrice.compareTo(BigDecimal.valueOf(0.00)) < 0) {
+                finalPrice = BigDecimal.valueOf(0.00);
+                // set discount for the price to be original retail price of the item
+                discount = item.getPrice();
+            }
+            discountTotal = discountTotal.add(discount);
 
-        // BigDecimal subtotalAfterDiscounts = subtotal - discountTotal;
+            if (item.isTaxable()) {
+                taxableSubtotal = taxableSubtotal.add(finalPrice);
+            }
+            subtotal = subtotal.add(item.getPrice());
+        }
 
-        // BigDecimal taxTotal = this.round2places(taxableSubtotal * TAX_RATE);
-        // BigDecimal grandTotal = subtotal + taxTotal;
+        BigDecimal subtotalAfterDiscounts = subtotal.subtract(discountTotal);
 
-        // log.info("Exiting checkoutWithCoupons()");
+        BigDecimal taxTotal = taxableSubtotal.multiply(TAX_RATE);
+        BigDecimal grandTotal = subtotal.add(taxTotal);
+
+        log.info("Exiting checkoutWithCoupons()");
 
         return ReceiptWithDiscountsResponse.builder()
-                .subtotalBeforeDiscounts(subtotal)
-                .subtotalAfterDiscounts(BigDecimal.valueOf(0.00))
-                .discountTotal(discountTotal)
-                .taxableSubtotalAfterDiscounts(taxableSubtotal)
-                .taxTotal(BigDecimal.valueOf(0.00))
-                .grandTotal(BigDecimal.valueOf(0.00))
+                .subtotalBeforeDiscounts(subtotal.setScale(2, RoundingMode.HALF_UP))
+                .subtotalAfterDiscounts(subtotalAfterDiscounts.setScale(2, RoundingMode.HALF_UP))
+                .discountTotal(discountTotal.setScale(2, RoundingMode.HALF_UP))
+                .taxableSubtotalAfterDiscounts(taxableSubtotal.setScale(2, RoundingMode.HALF_UP))
+                .taxTotal(taxTotal.setScale(2, RoundingMode.HALF_UP))
+                .grandTotal(grandTotal.setScale(2, RoundingMode.HALF_UP))
                 .build();
     }
 }
